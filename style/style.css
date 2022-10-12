@@ -4,9 +4,6 @@ body{
    
 }
 
-#container{
-    border-radius: 100px;
-}
 
 #delete{
 
@@ -26,6 +23,7 @@ div#resDelete {
     
     border-radius: 10px;
     padding: 10px 30px;
+    cursor: pointer;
 }
 
 #resDelete{
