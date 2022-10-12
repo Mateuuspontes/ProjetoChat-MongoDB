@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head> 
+   <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   
+    <link
+    rel="stylesheet"
+    href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css"
+    integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M"
+    crossorigin="anonymous"
+  />
+  <script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"
+    integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4"
+    crossorigin="anonymous"
+  ></script>
+  <script
+    src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js"
+    integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1"
+    crossorigin="anonymous"
+  ></script>
+  <script src="/socket.io/socket.io.js"></script>
+   <link rel="stylesheet" href="style/style.css">
+
+<title>Meu chat</title>
+</head>
+<body>
+<div class="container">
+ <br>
+ <div class="jumbotron">
+ <h1 class="display-4">Send Message</h1>
+ <br>
+ <input id = "name" class="form-control" placeholder="Name">
+ <br>
+ <textarea id = "message" class="form-control" placeholder="Your Message Here">
+</textarea>
+ <br>
+ <div id="Buttons">
+    <button id="send" class="btn btn-success">Send</button>
+    <button id="delete" class="btn btn-success">Delete</button>
+ </div> 
+   <div id="resDelete">
+      <h5>Tem certeza que deseja excluir todo o banco de dados?</h5>
+         <button id="confirm"><img src="style/confirma2.com.png" alt="Botão Confirmar"></button> 
+
+         <button id="cancel"><img src="style/botao-cancela.png" alt="Botão Cancelar"></button>
+   </div>
+  
+ </div>
+ 
+ <div id="messages"> 
+</div>
+</div>
+<script>
+   let p1 = document.querySelector('#p1')
+   let messages = document.querySelector('#messages')
+   let resDelete = document.querySelector('#resDelete')
+   let Buttons = document.querySelector('#Buttons')
+        
+   let socket = io();
+
+      $(()=>{
+        $("#send").click(()=>{
+        saveMessage({
+            name: $("#name").val(),
+            message:$("#message").val()
+        });
+               
+         });         
+
+         function saveMessage(message) {
+            $.post('http://localhost:3002/messages', message)
+         };
+
+         $("#delete").click(()=>{   
+         //   deleteMessage()
+         resDelete.style.display='inline-block';
+         Buttons.style.display='none';
+            
+            });
+
+            function deleteMessage() {         
+            $.ajax({
+             url:'http://localhost:3002/messages', 
+                method:"DELETE", 
+                success:function (){
+                  $("#messages").empty();
+
+                  alert(`Dados apagados!`);
+                }
+               });
+
+               getMessages();
+               
+               }
+            
+            
+         $("#confirm").click(()=>{
+
+            deleteMessage();
+            resDelete.style.display='none';
+            Buttons.style.display='inline-block';
+
+         });
+
+
+            
+
+         $("#cancel").click(()=>{
+            resDelete.style.display='none';
+         Buttons.style.display='inline-block';
+         })           
+         
+         
+         socket.on("message", addMessages);
+
+        });
+
+        function addMessages(message) {
+               $("#messages").append(`
+               <h4 id="h4">${message.name}</h4>
+               <p id="p"> ${message.message}</p>
+               `)};
+
+        function getMessages() {
+               $.get('http://localhost:3002/messages', (data)=>{
+                  data.forEach(addMessages);
+               }); };
+
+        getMessages();
+     
+
+    
+      
+       
+
+            
+        
+       
+
+        
+
+  
+
+  
+
+    
+   
+
+    
+   
+    
+
+</script>
+</body>
+</html>
