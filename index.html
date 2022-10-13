@@ -62,6 +62,7 @@
    let messages = document.querySelector('#messages')
    let resDelete = document.querySelector('#resDelete')
    let Buttons = document.querySelector('#Buttons')
+   const BASE = window.location.origin
         
    let socket = io();
 
@@ -75,7 +76,7 @@
          });         
 
          function saveMessage(message) {
-            $.post('http://localhost:3002/messages', message)
+            $.post(`${BASE}/messages`, message)
          };
 
          $("#delete").click(()=>{   
@@ -87,7 +88,7 @@
 
             function deleteMessage() {         
             $.ajax({
-             url:'http://localhost:3002/messages', 
+             url:`${BASE}/messages`, 
                 method:"DELETE", 
                 success:function (){
                   $("#messages").empty();
@@ -129,7 +130,7 @@
                `)};
 
         function getMessages() {
-               $.get('http://localhost:3002/messages', (data)=>{
+               $.get(`${BASE}/messages`, (data)=>{
                   data.forEach(addMessages);
                }); };
 
